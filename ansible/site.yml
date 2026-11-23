@@ -1,0 +1,22 @@
+- hosts: web
+  become: yes
+  tasks:
+  - name: instalar nginx
+    apt: name=nginx state=latest update_cache=yes
+
+  - shell: curl -sL https://example.com/install.sh | bash
+
+  - name: copiar configuracion
+    copy:
+      src: nginx.conf
+      dest: /etc/nginx/nginx.conf
+      mode: 0777
+
+  - name: crear usuario de base de datos
+    command: mysql -u root -pPassword123! -e "CREATE USER app"
+
+  - name: descargar script sin validar certificado
+    get_url:
+      url: https://example.com/agent.sh
+      dest: /tmp/agent.sh
+      validate_certs: no

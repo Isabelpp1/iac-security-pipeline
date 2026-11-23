@@ -1,0 +1,39 @@
+metadata:
+  id: "CKV2_ORG_1"
+  name: "Los recursos deben tener las etiquetas Proyecto, Ambiente y Responsable"
+  category: "GENERAL_SECURITY"
+  severity: "MEDIUM"
+  guideline: "Política interna: todo recurso debe identificar su proyecto, ambiente y responsable para inventario, costos y respuesta a incidentes."
+definition:
+  and:
+    - cond_type: "attribute"
+      resource_types:
+        - "aws_s3_bucket"
+        - "aws_instance"
+        - "aws_db_instance"
+        - "aws_security_group"
+        - "aws_kms_key"
+      attribute: "tags.Proyecto"
+      operator: "exists"
+    - cond_type: "attribute"
+      resource_types:
+        - "aws_s3_bucket"
+        - "aws_instance"
+        - "aws_db_instance"
+        - "aws_security_group"
+        - "aws_kms_key"
+      attribute: "tags.Ambiente"
+      operator: "within"
+      value:
+        - "dev"
+        - "qa"
+        - "prod"
+    - cond_type: "attribute"
+      resource_types:
+        - "aws_s3_bucket"
+        - "aws_instance"
+        - "aws_db_instance"
+        - "aws_security_group"
+        - "aws_kms_key"
+      attribute: "tags.Responsable"
+      operator: "exists"
