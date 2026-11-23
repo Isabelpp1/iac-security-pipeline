@@ -1,22 +1,25 @@
-- hosts: web
-  become: yes
+---
+- name: Configurar servidor web
+  hosts: web
+  become: true
   tasks:
-  - name: instalar nginx
-    apt: name=nginx state=latest update_cache=yes
+    - name: Instalar nginx en versión fija
+      ansible.builtin.apt:
+        name: nginx=1.24.*
+        state: present
+        update_cache: true
 
-  - shell: curl -sL https://example.com/install.sh | bash
+    - name: Copiar configuración de nginx
+      ansible.builtin.copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: "0644"
 
-  - name: copiar configuracion
-    copy:
-      src: nginx.conf
-      dest: /etc/nginx/nginx.conf
-      mode: 0777
-
-  - name: crear usuario de base de datos
-    command: mysql -u root -pPassword123! -e "CREATE USER app"
-
-  - name: descargar script sin validar certificado
-    get_url:
-      url: https://example.com/agent.sh
-      dest: /tmp/agent.sh
-      validate_certs: no
+    - name: Descargar script validando el certificado
+      ansible.builtin.get_url:
+        url: https://example.com/agent.sh
+        dest: /tmp/agent.sh
+        mode: "0750"
+        validate_certs: true
